@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+<style>
+body { padding: 4px;}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-family: Arial;
+  font-size: 12px;
+}
+th, td {
+  padding: 4px;
+  text-align: left;
+}
+table tr:nth-child(even) {
+  background-color: #fff;
+}
+table tr:nth-child(odd) {
+  background-color: #f7f8f9;
+}
+table th {
+  background-color: black;
+  color: white;
+  width: 50%;
+}
+</style>
+</head>
+<body>
+  <ul id="quickmenu">
+    <li data-menu-item="dialogRefreshTicketsIds">Refresh Ticket Data</li>
+    <li data-menu-item="recalcCustomFunctions">Re-Calculate all formulas in active sheet</li>
+    <li data-menu-item="sidebarJiraFieldMap">Show Jira Field Map</li>
+    <li data-menu-item="dialogIssueFromFilter">List Issues from Filter</li>
+    <li data-menu-item="dialogTimesheet">Create Time Report</li>
+  </ul>
+
+  <hr/>
+
+    <form name="frm-jst_search" action="" method="post">
+      <fieldset class="block">
+        <legend>JST_search()</legend>
+
+        <div class="form-group block">
+          <label for="search-jql">JQL</label>
+          <span class="inline grey">A well-formed Jira <a href="https://confluence.atlassian.com/jirasoftwarecloud/advanced-searching-764478330.html#Advancedsearching-ConstructingJQLqueries">JQL query</a>.</span>
+          <input type="text" id="search-jql" name="search_jql" class="block" style="width:100%" value="" placeholder="status = Done">
+        </div>
+        <div class="form-group block">
+          <label for="search-fields">Fields</label>
+          <span class="inline grey">Jira issue field IDs. e.g.: "key,summary,status"</span>
+          <input type="text" id="search-fields" name="search_fields" class="block" style="width:100%" value="" placeholder="summary,status" />
+        </div>
+        <div class="form-group block">
+          <label for="search-limit">Limit</label>
+          <span class="inline grey">Number of results to return. 1 to 100. Default: 1</span>
+          <input type="text" id="search-limit" name="search_limit" class="block" style="width:100%" value="">
+        </div>
+        <div class="form-group block">
+          <label for="search-startat">StartAt</label>
+          <span class="inline grey">The index of the first result to return (0-based)</span>
+          <input type="text" id="search-startat" name="search_startat" class="block" style="width:100%" value="">
+        </div>
+
+        <div class="block">
+          <button type="submit" class="action">Insert</button>
+        </div>
+      </fieldset>
+    </form>
+  <script>
+      /* global google */
+      var quickmenu = document.getElementById('quickmenu');
+
+      Array.prototype.slice.call(quickmenu.querySelectorAll('[data-menu-item]')).filter(function(el){ 
+        el.addEventListener('click', callMenuItem);
+      });
+
+      function callMenuItem() {
+        console.log(this.dataset.menuItem);
+        google.script.run[this.dataset.menuItem]();
+      }
+      
+      var form    = document.forms['frm-jst_search'];
+      form.addEventListener('submit', formSubmitHandler);
+
+      function formSubmitHandler(event) {
+        if (event) event.preventDefault();
+
+        google.script.run.processQMAction(this);
+      }
+    </script>
+</body>
+</html>

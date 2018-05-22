@@ -6,8 +6,11 @@
  */
 function insertIssuesFromFilter(jsonFormData) {
   jsonFormData = jsonFormData || {filter_id: 0};
-  var filter = getFilter( parseInt(jsonFormData.filter_id) ),
-      response = {status: false, message: ''};
+  var filter     = jsonFormData['filter_id'] ? getFilter( parseInt(jsonFormData['filter_id']) ) : {},
+      jql        = jsonFormData['jql'] || filter.jql,
+      maxResults = parseInt(jsonFormData['maxResults']) || 10000,
+      startAt    = parseInt(jsonFormData['startAt']) || 0,
+      response   = {status: false, message: ''};
 
   var ok = function(resp, status, errorMessage) {
     debug.log('insertIssuesFromFilter() resp(len): %s; s: %s; msg: %s', resp.data.length, status, errorMessage);
@@ -24,9 +27,10 @@ function insertIssuesFromFilter(jsonFormData) {
       var cell = sheet.getActiveCell();
 
       var table = new IssueTable(sheet, cell, {issues: resp.data});
-      table.addHeader()
-        .addSummary(filter.name)
-        .fillTable();
+
+      table.addHeader();
+      if (filter.name) table.addSummary(filter.name)
+      table.fillTable();
 
       response.status = true;
 
@@ -50,10 +54,11 @@ function insertIssuesFromFilter(jsonFormData) {
   var columns = jsonFormData['columns'] || jiraColumnDefault;
   getStorage_().setValue('userColumns', columns); //store for re-use by user
 
-  var search = new Search(filter.jql);
+  var search = new Search(jql);
   search.setOrderBy()
         .setFields(columns)
-        .setMaxResults(10000)
+        .setMaxResults(maxResults)
+        .setStartAt(startAt)
         .search()      
         .withSuccessHandler(ok)
         .withFailureHandler(error);

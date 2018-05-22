@@ -47,6 +47,7 @@ function addMenu() {
     .addItem('Refresh Ticket Data', 'dialogRefreshTicketsIds')
     .addItem('Re-Calculate all formulas in active sheet', 'recalcCustomFunctions')
     .addItem('Show Jira Field Map', 'sidebarJiraFieldMap')
+    .addItem('Show Quick Menu in Sidebar' , 'sidebarQuickMenu')
     
     .addSeparator()
     .addItem('List Issues from Filter', 'dialogIssueFromFilter')
