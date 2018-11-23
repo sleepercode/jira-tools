@@ -469,6 +469,11 @@ function unifyIssueAttrib(attrib, data) {
       };
       break;
     case 'timespent':
+    resp = {
+            value : parseFloat(data.fields[attrib] / 3600) || null,
+            format: "0.00"
+          };
+          break;
     case 'timeestimate':
     case 'timeoriginalestimate':
     case 'aggregatetimespent':
